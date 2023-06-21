@@ -11,12 +11,15 @@ public class PlayerController : MonoBehaviour
     public float speed = 5f;
 
     Rigidbody2D rb;
+    SpriteRenderer sr;
+
     Vector2 direction;
 
     void Start()
     {
         anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
+        sr = GetComponent < SpriteRenderer >();
     }
 
     private void FixedUpdate()
@@ -31,11 +34,11 @@ public class PlayerController : MonoBehaviour
         {
             if (direction.x >= 0f)
             {
-                transform.rotation = Quaternion.Euler(0, 0, 0);
+                sr.flipX = false;
             }
             else if (direction.x < 0f)
             {
-                transform.rotation = Quaternion.Euler(0, 180, 0);
+                sr.flipX = true;
             }
 
             if (anim != null)
@@ -50,5 +53,9 @@ public class PlayerController : MonoBehaviour
                 anim.SetBool("Running", false);
             }
         }
+        //if (Camera.main != null)
+        //{
+        //    Debug.Log("Current Camera: " + Camera.main);
+        //}
     }
 }
