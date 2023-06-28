@@ -56,3 +56,9 @@ TagManager:
   - name: Foreground
     uniqueID: 1937223265
     locked: 0
+  - name: Bomb
+    uniqueID: 3123883259
+    locked: 0
+  - name: Canva
+    uniqueID: 1525606779
+    locked: 0

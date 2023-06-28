@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,39 +7,111 @@ using UnityEngine.UI;
 public class PlayerController : MonoBehaviour
 
 {
+    [SerializeField] float speed = 3.5f;
+    [SerializeField] Vector2 hitKick = new Vector2(0f, 2f);
+    [SerializeField] Transform hurtBox;
+    [SerializeField] float attackRadius = 3f;
+
     public Animator anim;
     public DynamicJoystick joystick;
-    public float speed = 5f;
+    public Button attackButon;
 
-    Rigidbody2D rb;
+    public Rigidbody2D rb;
     SpriteRenderer sr;
+    BoxCollider2D bc;
 
-    Vector2 direction;
+    Vector2 direction; //movement 
+
+    bool isHit = false;
+
 
     void Start()
     {
+        attackButon.onClick.AddListener(Attack);
         anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent < SpriteRenderer >();
+        bc = GetComponent<BoxCollider2D>();
     }
 
     private void FixedUpdate()
     {
-        direction = new Vector2(joystick.Horizontal, joystick.Vertical);
-        rb.velocity = direction * speed;
+        if (!isHit)
+        {
+            direction = new Vector2(joystick.Horizontal, joystick.Vertical);
+            rb.velocity = direction * speed; //move based on the joystick input
+        }
     }
 
     void Update()
+    {
+        if (!isHit)
+        {
+            Move();
+
+            if (bc.IsTouchingLayers(LayerMask.GetMask("Enemy")))
+            {
+                PlayerHit(false); //when player collides with enemy
+            }
+        }
+    }
+
+    public void Attack()
+    {
+        anim.SetTrigger("Attacking");
+
+        Collider2D[] enemyToHit = Physics2D.OverlapCircleAll(hurtBox.position, attackRadius, LayerMask.GetMask("Enemy"));
+
+        foreach(Collider2D enemy in enemyToHit)
+        {
+            enemy.GetComponent<EnemyController>().Damage();
+        }
+    }
+
+    public void PlayerHit(bool hitByBomb)
+    {
+        isHit = true;
+
+        rb.velocity = hitKick * new Vector2(-transform.localScale.x, 0f); //apply kick force
+        Vector2 sidewayForce = new Vector2(hitKick.x * transform.localScale.x, 0f);
+
+        rb.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
+
+        
+        StartCoroutine(ResetHitStatus(hitByBomb)); //reset the hit status after delay
+    }
+
+    IEnumerator ResetHitStatus(bool hitByBomb)
+    {
+        yield return new WaitForSeconds(0.5f);
+        anim.SetTrigger("EnemyHit");
+
+        if(hitByBomb)
+        {
+            anim.SetTrigger("BombHit");
+        }
+        else
+        {
+            anim.SetTrigger("EnemyHit");
+        }
+
+        isHit = false;
+        rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+    }
+
+
+
+    private void Move()
     {
         if (direction != Vector2.zero)
         {
             if (direction.x >= 0f)
             {
-                sr.flipX = false;
+                sr.flipX = false; //flip the sprite if mowing right
             }
             else if (direction.x < 0f)
             {
-                sr.flipX = true;
+                sr.flipX = true; //flip the sprite if moving left
             }
 
             if (anim != null)
@@ -53,9 +126,10 @@ public class PlayerController : MonoBehaviour
                 anim.SetBool("Running", false);
             }
         }
-        //if (Camera.main != null)
-        //{
-        //    Debug.Log("Current Camera: " + Camera.main);
-        //}
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.DrawSphere(hurtBox.position, attackRadius); //draw a sphere to represent attack radius
     }
 }
