@@ -1,20 +1,25 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class EnemyController : MonoBehaviour
 {
+    
     Rigidbody2D enemyrb;
     Animator enemyAnim;
 
-    public GameObject[] point = new GameObject[13]; //waypoints for enemy
+    //public GameObject[] point = new GameObject[13]; //waypoints for enemy
     private int action, rand = 0;
-    public float speed = 1f;
-    public int health = 3;
+
+    [SerializeField]
+    private float speed = 1f;
+
+    [SerializeField]
+    private int health = 3;
     private GameObject Player;
 
-    //private float distance;
-    // private int action, rand = 0;
+    //private float distance
     private bool isDead = false;
     private Vector2 startPos;
     private bool isReturn = false;
@@ -30,35 +35,25 @@ public class EnemyController : MonoBehaviour
 
     void Update()
     {
-        EnemyMovement();
-    }
-
-    private void FixedUpdate()
-    {
-        
+       EnemyMovement();
     }
 
     public void Damage()
     {
         Debug.Log("DAMAGE");
 
-        do
+
+        Debug.Log("NOT DEAD");
+        enemyAnim.SetTrigger("Hit");
+
+        health--; //reduce health
+        Debug.Log("health after hit " + health);
+
+        if (health <= 0)
         {
-            Debug.Log("NOT DEAD");
-            enemyAnim.SetTrigger("Hit");
-
-            health--; //reduce health
-            Debug.Log("health after hit " + health);
-
-            if (health <= 0)
-            {
-                isDead = true;
-                break;
-            }
-            return;
+           isDead = true;
+           Dying();
         }
-        while (isDead == true);
-        Dying();
     }
 
     public void Dying()
@@ -79,14 +74,7 @@ public class EnemyController : MonoBehaviour
 
         enemyrb.bodyType = RigidbodyType2D.Static;
 
-        StartCoroutine(EnemyDestroy()); //destroy the enemy
-    }
-
-    IEnumerator EnemyDestroy()
-    {
-        yield return new WaitForSeconds(2);
-
-        Destroy(gameObject);
+        Destroy(gameObject, 2);
     }
 
     private void EnemyMovement()
@@ -96,9 +84,8 @@ public class EnemyController : MonoBehaviour
         if (distanceToPlayer <= 5f)
         {
             //find the player
-            action = 1;
             Vector2 direction = (Player.transform.position - transform.position).normalized;
-            enemyrb.AddForce(enemyrb.velocity = direction * speed);
+            enemyrb.velocity = direction * speed;
         }
         else
         {
@@ -109,14 +96,14 @@ public class EnemyController : MonoBehaviour
                 if (Vector2.Distance(transform.position, startPos) > 3f)
                 {
                     //go to the start pos
-                    enemyrb.AddForce(transform.position = Vector2.MoveTowards(transform.position, startPos, speed * Time.deltaTime));
+                    transform.position = Vector2.MoveTowards(transform.position, startPos, speed * Time.deltaTime);
                 }
                 else
                 {
                     //player has moved away , return to start pos
                     //isReturn = true;
-                    Debug.Log("returned " + isReturn);
-                    EnemyAtThePos();
+                    isReturn = true;
+                    //EnemyAtThePos();
 
                     action = 0;
                 }
@@ -124,32 +111,24 @@ public class EnemyController : MonoBehaviour
 
             else
             {
-                Debug.Log(isReturn + "???");
-                //reache starpos
-                isReturn = false;
+                //EnemyAtThePos();
             }
-            enemyrb.AddForce(enemyrb.velocity = Vector2.zero);
         }
 
-        
+
     }
 
-    private void EnemyAtThePos()
-    {
-        if (point[rand].transform.parent != null)
-            for (int i = 0; i < point.Length; i++)
-            {
-                point[i].transform.parent = null;
-            }
-        if (transform.position != point[rand].transform.position)
-            enemyrb.AddForce(transform.position = Vector2.MoveTowards(transform.position, point[rand].transform.position, speed * Time.deltaTime));
-        else
-            rand = Random.Range(0, 13);
-    }
+    //private void EnemyAtThePos()
+    //{
+    //    if (point[rand].transform.parent != null)
+    //        for (int i = 0; i < point.Length; i++)
+    //        {
+    //            point[i].transform.parent = null;
+    //        }
+    //    if (transform.position != point[rand].transform.position)
+    //        transform.position = Vector3.MoveTowards(transform.position, point[rand].transform.position, speed * Time.deltaTime);
+    //    else
+    //        rand = Random.Range(0, 13);
+    //}
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (action == 0)
-            rand = Random.Range(0, 12);
-    }
 }

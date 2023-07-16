@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Transform hurtBox;
     [SerializeField] float attackRadius = 3f;
 
+
     public Animator anim;
     public DynamicJoystick joystick;
     public Button attackButon;
@@ -43,15 +44,27 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+
+    [SerializeField]
+    private float hitDelay = 2;
+    private float currentHitDelay = 0;
     void Update()
     {
         if (!isHit)
         {
             Move();
 
-            if (bc.IsTouchingLayers(LayerMask.GetMask("Enemy")))
+            if(currentHitDelay <= 0)
             {
-                PlayerHit(false); //when player collides with enemy
+                if (bc.IsTouchingLayers(LayerMask.GetMask("Enemy")))
+                {
+                    PlayerHit(false); //when player collides with enemy
+                    currentHitDelay = hitDelay;
+                }
+            }
+            else
+            {
+                currentHitDelay -= Time.deltaTime;
             }
         }
     }
@@ -64,7 +77,9 @@ public class PlayerController : MonoBehaviour
 
         foreach(Collider2D enemy in enemyToHit)
         {
-            enemy.GetComponent<EnemyController>().Damage();
+            Debug.Log("EnemyHit");
+            enemy.GetComponent<AgentScript>()?.Damage();
+
         }
     }
 

@@ -47,6 +47,9 @@ TagManager:
   - name: Background
     uniqueID: 1050577463
     locked: 0
+  - name: Bomb
+    uniqueID: 3123883259
+    locked: 0
   - name: Enemy
     uniqueID: 2421459809
     locked: 0
@@ -55,9 +58,6 @@ TagManager:
     locked: 0
   - name: Foreground
     uniqueID: 1937223265
-    locked: 0
-  - name: Bomb
-    uniqueID: 3123883259
     locked: 0
   - name: Canva
     uniqueID: 1525606779

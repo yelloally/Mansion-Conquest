@@ -107,7 +107,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 2106789879
-  m_SortingLayer: 4
+  m_SortingLayer: 5
   m_SortingOrder: 0
   m_Sprite: {fileID: -556618864, guid: bef605dc18024450692dc43593e5b397, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -203,7 +203,9 @@ MonoBehaviour:
   speed: 3.5
   hitKick: {x: 5, y: 5}
   hurtBox: {fileID: 3409392455079348138}
-  attackRadius: 3
+  attackRadius: 1
   anim: {fileID: 4394196629430243534}
   joystick: {fileID: 0}
   attackButon: {fileID: 0}
+  rb: {fileID: 2490495414553598241}
+  hitDelay: 2

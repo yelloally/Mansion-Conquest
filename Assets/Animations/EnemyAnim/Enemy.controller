@@ -36,10 +36,10 @@ AnimatorStateMachine:
     m_Position: {x: 440, y: 90, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 7213063447616857396}
-    m_Position: {x: 410, y: -20, z: 0}
+    m_Position: {x: 430, y: -10, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -991370877918200638}
-    m_Position: {x: 680, y: -40, z: 0}
+    m_Position: {x: 670, y: -20, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions:
   - {fileID: 4982234822944392574}
@@ -136,6 +136,12 @@ AnimatorController:
   m_Name: Enemy
   serializedVersion: 5
   m_AnimatorParameters:
+  - m_Name: Running
+    m_Type: 4
+    m_DefaultFloat: 0
+    m_DefaultInt: 0
+    m_DefaultBool: 0
+    m_Controller: {fileID: 0}
   - m_Name: Die
     m_Type: 9
     m_DefaultFloat: 0
