@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class PlayerController : MonoBehaviour
 
 {
+    [SerializeField] int maxHealth = 10;
     [SerializeField] float speed = 3.5f;
     [SerializeField] Vector2 hitKick = new Vector2(0f, 2f);
     [SerializeField] Transform hurtBox;
@@ -17,6 +18,8 @@ public class PlayerController : MonoBehaviour
     public DynamicJoystick joystick;
     public Button attackButon;
 
+    public Health healthBar;
+
     public Rigidbody2D rb;
     SpriteRenderer sr;
     BoxCollider2D bc;
@@ -25,9 +28,14 @@ public class PlayerController : MonoBehaviour
 
     bool isHit = false;
 
+    private int health;
+
 
     void Start()
     {
+        health = maxHealth;
+        healthBar.SetMaxHealth(maxHealth);
+
         attackButon.onClick.AddListener(Attack);
         anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
@@ -83,6 +91,21 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void TakeDamage(int damage)
+    {
+        health -= damage; //reduce player's health 
+
+        //check if the player is still alive
+        if (health <= 0)
+        {
+            //player is dead
+            //disable the player's GameObject
+            gameObject.SetActive(false);
+        }
+
+        healthBar.SetHealth(health);
+    }
+
     public void PlayerHit(bool hitByBomb)
     {
         isHit = true;
@@ -92,8 +115,19 @@ public class PlayerController : MonoBehaviour
 
         rb.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
 
-        
         StartCoroutine(ResetHitStatus(hitByBomb)); //reset the hit status after delay
+
+        // Reduce player's health by 1 when hit by an enemy
+        if (!hitByBomb)
+        {
+            TakeDamage(1);
+        }
+
+        if (hitByBomb)
+        {
+            TakeDamage(2);
+        }
+        Debug.Log("Player's Health: " + health);
     }
 
     IEnumerator ResetHitStatus(bool hitByBomb)

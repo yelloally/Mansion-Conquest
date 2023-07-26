@@ -6,6 +6,8 @@ using UnityEngine.AI;
 
 public class AgentScript : MonoBehaviour
 {
+    public Health healthBar;
+
     SpriteRenderer sr;
     Rigidbody2D enemyrb;
     Animator enemyAnim;
@@ -23,19 +25,23 @@ public class AgentScript : MonoBehaviour
     private float speed = 1f;
 
     [SerializeField]
-    private int health = 3;
+    private int maxHealth = 3;
     private GameObject Player;
 
     private bool isDead = false;
     private Vector2 startPos;
     private bool isReturn = false;
 
+    private PlayerController playerController;
 
     public NavMeshAgent agent;
     [SerializeField] private float patrolRange = 2f; //radius of circle
     [SerializeField] private float detectionRange = 5f;
+    [SerializeField] private bool followsPlayer = true;
 
     [SerializeField] public Vector2 centrePoint; //centre of the area the agent wants to move around in
+
+    private int healthEnemy;
 
     //private Vector2 centrePoint;
     private Vector2 targetPoint;
@@ -49,6 +55,11 @@ public class AgentScript : MonoBehaviour
 
     void Start()
     {
+        healthEnemy = maxHealth;
+        healthBar.SetMaxHealth(maxHealth);
+
+        playerController = GameObject.Find("Player").GetComponent<PlayerController>();
+
         agent = GetComponent<NavMeshAgent>();
         agent.stoppingDistance = 0.5f; //stopping distance to a smaller value
 
@@ -70,13 +81,18 @@ public class AgentScript : MonoBehaviour
     {
         enemyAnim.SetTrigger("Hit");
 
-        health--; //reduce health
-        Debug.Log("Hit" + this.name);
-        if (health <= 0)
+        // Reduce enemy's health
+        healthEnemy--;
+
+        if (healthEnemy <= 0)
         {
             isDead = true;
             Dying();
         }
+
+        healthBar.SetHealth(healthEnemy);
+        //handle player's health reduction
+        playerController.PlayerHit(false);
     }
 
     public void Dying()
@@ -190,7 +206,7 @@ public class AgentScript : MonoBehaviour
 
         enemyAnim.SetBool("Running", true);
         float distanceToPlayer = Vector2.Distance(transform.position, Player.transform.position);
-        if (distanceToPlayer <= detectionRange)
+        if (distanceToPlayer <= detectionRange && followsPlayer)
         {
             //Player in range of detectionRange searching for path to Player
             agent.SetDestination(Player.transform.position);
