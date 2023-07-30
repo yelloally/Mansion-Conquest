@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -179,6 +180,8 @@ public class PlayerController : MonoBehaviour
 
     private void OnDrawGizmosSelected()
     {
-        Gizmos.DrawSphere(hurtBox.position, attackRadius); //draw a sphere to represent attack radius
+      //  Gizmos.DrawLine(hurtBox.position, attackRadius); //draw a sphere to represent attack radius
+        Handles.color = Color.blue;
+        Handles.DrawWireDisc(transform.position, Vector3.forward, attackRadius);
     }
 }

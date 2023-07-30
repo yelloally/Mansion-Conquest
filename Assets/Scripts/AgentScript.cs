@@ -28,6 +28,8 @@ public class AgentScript : MonoBehaviour
     private int maxHealth = 3;
     private GameObject Player;
 
+    private float timeSincePlayerLeft = 0f;
+
     private bool isDead = false;
     private Vector2 startPos;
     private bool isReturn = false;
@@ -84,6 +86,8 @@ public class AgentScript : MonoBehaviour
         // Reduce enemy's health
         healthEnemy--;
 
+        StartCoroutine(RestoreHealthAfterDelay(7f));
+
         if (healthEnemy <= 0)
         {
             isDead = true;
@@ -132,51 +136,6 @@ public class AgentScript : MonoBehaviour
         return false;
     }
 
-    //custom editor for visualizing detection range in the scene 
-    [CustomEditor(typeof(AgentScript))]
-    public class HandlesAgentScript : Editor
-    {
-        public void OnSceneGUI()
-        {
-            AgentScript linkedObject = target as AgentScript;
-
-            Handles.color = Color.blue;
-
-            EditorGUI.BeginChangeCheck();
-
-            //gets radius handle 
-            float range = Handles.RadiusHandle(Quaternion.identity, linkedObject.transform.position, linkedObject.detectionRange, false);
-            
-            if(EditorGUI.EndChangeCheck())
-            {
-                Undo.RecordObject(target, "Update DetectionRange");
-                linkedObject.detectionRange = range;
-            }
-        }
-    }
-    //vizualiaze gizmos in the scene
-    private void OnDrawGizmos()
-    {
-        //draw target
-        Handles.color = Color.red;
-        Handles.DrawWireDisc(targetPoint, Vector3.forward, 0.1f);
-        Handles.DrawWireDisc(transform.position, Vector3.forward, 0.1f);
-
-        //draw a line from enemy to the target
-        Gizmos.color = Color.green;
-        Gizmos.DrawLine(transform.position, targetPoint);
-
-        if (movementType == MovementType.Random)
-        {
-            //represent the detetection patrol areafor random move
-            Handles.color = Color.yellow;
-            Handles.DrawWireDisc(centrePoint, Vector3.forward, patrolRange);
-        }
-        //represent rhe detection range
-        Handles.color = Color.blue;
-        Handles.DrawWireDisc(transform.position, Vector3.forward, detectionRange);
-    }
-
     //handle enemy movement 
     private void EnemyMovement()
     {
@@ -191,28 +150,32 @@ public class AgentScript : MonoBehaviour
                 sr.flipX = true; //flip the sprite if moving left
             }
 
-            if (enemyAnim != null)
-            {
-                enemyAnim.SetBool("Running", true);
-            }
+            //if (enemyAnim != null)
+            //{
+            //    enemyAnim.SetBool("Running", true);
+            //}
         }
-        else
-        {
-            if (enemyAnim != null)
-            {
-                enemyAnim.SetBool("Running", false);
-            }
-        }
+        //else
+        //{
+        //    if (enemyAnim != null)
+        //    {
+        //        enemyAnim.SetBool("Running", false);
+        //    }
+        //}
 
-        enemyAnim.SetBool("Running", true);
+//        enemyAnim.SetBool("Running", true);
         float distanceToPlayer = Vector2.Distance(transform.position, Player.transform.position);
         if (distanceToPlayer <= detectionRange && followsPlayer)
         {
             //Player in range of detectionRange searching for path to Player
             agent.SetDestination(Player.transform.position);
+            timeSincePlayerLeft = 0f;
         }
         else
         {
+            //Player is not nearby, start the timer
+            timeSincePlayerLeft += Time.deltaTime;
+
             switch (movementType)
             {
                 case MovementType.None:
@@ -256,4 +219,61 @@ public class AgentScript : MonoBehaviour
         }
         agent.transform.rotation = Quaternion.LookRotation(Vector3.forward);
     }
+
+    private IEnumerator RestoreHealthAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        //restore enemy's health to its maximum value
+        healthEnemy = maxHealth;
+        healthBar.SetHealth(healthEnemy);
+        isDead = false;
+    }
+
+    #region DebugInfo
+    //custom editor for visualizing detection range in the scene 
+    [CustomEditor(typeof(AgentScript))]
+    public class HandlesAgentScript : Editor
+    {
+        public void OnSceneGUI()
+        {
+            AgentScript linkedObject = target as AgentScript;
+
+            Handles.color = Color.blue;
+
+            EditorGUI.BeginChangeCheck();
+
+            //gets radius handle 
+            float range = Handles.RadiusHandle(Quaternion.identity, linkedObject.transform.position, linkedObject.detectionRange, false);
+
+            if (EditorGUI.EndChangeCheck())
+            {
+                Undo.RecordObject(target, "Update DetectionRange");
+                linkedObject.detectionRange = range;
+            }
+        }
+    }
+
+    //vizualiaze gizmos in the scene
+    private void OnDrawGizmos()
+    {
+        //draw target
+        Handles.color = Color.red;
+        Handles.DrawWireDisc(targetPoint, Vector3.forward, 0.1f);
+        Handles.DrawWireDisc(transform.position, Vector3.forward, 0.1f);
+
+        //draw a line from enemy to the target
+        Gizmos.color = Color.green;
+        Gizmos.DrawLine(transform.position, targetPoint);
+
+        if (movementType == MovementType.Random)
+        {
+            //represent the detetection patrol areafor random move
+            Handles.color = Color.yellow;
+            Handles.DrawWireDisc(centrePoint, Vector3.forward, patrolRange);
+        }
+        //represent rhe detection range
+        Handles.color = Color.blue;
+        Handles.DrawWireDisc(transform.position, Vector3.forward, detectionRange);
+    }
+    #endregion
 }
