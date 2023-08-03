@@ -20,10 +20,6 @@ public class AgentScript : MonoBehaviour
     [SerializeField]
     private MovementType movementType = MovementType.None;
 
-
-    [SerializeField]
-    private float speed = 1f;
-
     [SerializeField]
     private int maxHealth = 3;
     private GameObject Player;
@@ -32,7 +28,6 @@ public class AgentScript : MonoBehaviour
 
     private bool isDead = false;
     private Vector2 startPos;
-    private bool isReturn = false;
 
     private PlayerController playerController;
 
@@ -52,7 +47,8 @@ public class AgentScript : MonoBehaviour
     {
         None, //0
         Random, //1
-        Patrol //2
+        Patrol, //2
+        Boss, //3
     }
 
     void Start()
@@ -136,34 +132,26 @@ public class AgentScript : MonoBehaviour
         return false;
     }
 
+    private float timeSinceLastSpawn = 0f;
+    public float spawnInterval = 5f;
+    public GameObject enemyPrefab;
+    public float interval = 100;
+    private float counter = 0;
+
     //handle enemy movement 
     private void EnemyMovement()
     {
-        if (direction != Vector2.zero)
+        Vector2 movementDirection = agent.velocity.normalized;
+
+        if (movementDirection.x > 0)
         {
-            if (direction.x >= 0f)
-            {
-                sr.flipX = false; //flip the sprite if mowing right
-            }
-            else if (direction.x < 0f)
-            {
-                sr.flipX = true; //flip the sprite if moving left
-            }
-
-            //if (enemyAnim != null)
-            //{
-            //    enemyAnim.SetBool("Running", true);
-            //}
+            sr.flipX = true;
         }
-        //else
-        //{
-        //    if (enemyAnim != null)
-        //    {
-        //        enemyAnim.SetBool("Running", false);
-        //    }
-        //}
+        else if (movementDirection.x < 0)
+        {
+            sr.flipX = false;
+        }
 
-//        enemyAnim.SetBool("Running", true);
         float distanceToPlayer = Vector2.Distance(transform.position, Player.transform.position);
         if (distanceToPlayer <= detectionRange && followsPlayer)
         {
@@ -215,11 +203,48 @@ public class AgentScript : MonoBehaviour
                         }
                     }
                     break;
+                case MovementType.Boss:
+                    BossMovement();
+                    break;
+
             }
         }
         agent.transform.rotation = Quaternion.LookRotation(Vector3.forward);
     }
 
+    private void BossMovement()
+    {
+        //float distanceToPlayer = Vector2.Distance(transform.position, Player.transform.position);
+        //if (distanceToPlayer <= detectionRange && followsPlayer)
+        //{
+        //    //player in range 
+        //    agent.SetDestination(Player.transform.position);
+        //    timeSincePlayerLeft = 0f;
+
+        //    //spawn enemies
+        //    timeSinceLastSpawn += Time.deltaTime;
+        //    if (timeSinceLastSpawn >= spawnInterval)
+        //    {
+        //        SpawnEnemies();
+        //        timeSinceLastSpawn = 0f;
+        //    }
+        //}
+        if (agent.remainingDistance <= agent.stoppingDistance) //done with path
+        {
+            if (!agent.pathPending) //check if a new path is not already calculated
+            {
+                Vector2 point;
+                if (RandomPoint(centrePoint, patrolRange, out point))
+                {
+                    agent.SetDestination(point);//ster new destination 
+
+                    targetPoint = point; //store
+                }
+            }
+        }
+    }
+
+    
     private IEnumerator RestoreHealthAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);

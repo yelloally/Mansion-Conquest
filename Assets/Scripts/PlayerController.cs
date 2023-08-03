@@ -92,6 +92,15 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void AddHealth(int amount)
+    {
+        health += amount;
+        //health!= maximum health
+        health = Mathf.Min(health, maxHealth);
+
+        healthBar.SetHealth(health);
+    }
+
     public void TakeDamage(int damage)
     {
         health -= damage; //reduce player's health 
@@ -119,12 +128,12 @@ public class PlayerController : MonoBehaviour
         StartCoroutine(ResetHitStatus(hitByBomb)); //reset the hit status after delay
 
         // Reduce player's health by 1 when hit by an enemy
-        if (!hitByBomb)
+        if (hitByBomb)
         {
             TakeDamage(1);
         }
 
-        if (hitByBomb)
+        else
         {
             TakeDamage(2);
         }
