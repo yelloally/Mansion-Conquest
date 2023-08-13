@@ -6,6 +6,7 @@ public class EnemySpawner : MonoBehaviour
 {
     public GameObject enemyPrefab;
     public float interval = 100;
+
     private float counter = 0;
 
     // Update is called once per frame
@@ -17,7 +18,6 @@ public class EnemySpawner : MonoBehaviour
         {
             counter = 0;
             Instantiate(enemyPrefab, transform.position, transform.rotation);
-
         }
     }
 }

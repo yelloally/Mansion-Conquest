@@ -7,11 +7,11 @@ public class HealthPickup : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        PlayerController playerController = other.GetComponent<PlayerController>();
-        if (playerController != null)
+        PlayerHealth playerhealth = other.GetComponent<PlayerHealth>();
+        if (playerhealth != null)
         {
             Debug.Log("Health potion collected!");
-            playerController.AddHealth(healthRestore);
+            playerhealth.AddHealth(healthRestore);
             Destroy(gameObject);
         }
     }
