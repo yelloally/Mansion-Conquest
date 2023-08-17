@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 61768957}
   - component: {fileID: 61768959}
   - component: {fileID: 61768958}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: HealthBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -147,7 +147,7 @@ GameObject:
   - component: {fileID: 415216821}
   - component: {fileID: 415216820}
   - component: {fileID: 415216819}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: HealthBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -247,7 +247,7 @@ GameObject:
   - component: {fileID: 742897438}
   - component: {fileID: 742897440}
   - component: {fileID: 742897439}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -323,7 +323,7 @@ GameObject:
   - component: {fileID: 1225299286}
   - component: {fileID: 1225299288}
   - component: {fileID: 1225299287}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Border
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -388,6 +388,68 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &1557736529
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1557736530}
+  m_Layer: 8
+  m_Name: BulletParent
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1557736530
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1557736529}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3769117110165184898}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1593781126
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1593781127}
+  m_Layer: 8
+  m_Name: Spawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1593781127
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1593781126}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.17, y: -0.42, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3769117110165184898}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1784560274
 GameObject:
   m_ObjectHideFlags: 0
@@ -399,7 +461,7 @@ GameObject:
   - component: {fileID: 1784560275}
   - component: {fileID: 1784560277}
   - component: {fileID: 1784560276}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -479,7 +541,10 @@ GameObject:
   - component: {fileID: 7099148092395605648}
   - component: {fileID: 7949094586910062015}
   - component: {fileID: 35420904}
-  m_Layer: 0
+  - component: {fileID: 2071570975}
+  - component: {fileID: 2071570982}
+  - component: {fileID: 2071570983}
+  m_Layer: 8
   m_Name: Wizzard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -499,6 +564,8 @@ Transform:
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 415216818}
+  - {fileID: 1593781127}
+  - {fileID: 1557736530}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -606,11 +673,11 @@ CapsuleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.1188906, y: 0.032008886}
-  m_Size: {x: 0.67297137, y: 1.5600736}
+  m_Offset: {x: -0.1026384, y: 0.004921754}
+  m_Size: {x: 0.9438467, y: 1.8309481}
   m_Direction: 0
 --- !u!195 &7949094586910062015
 NavMeshAgent:
@@ -622,7 +689,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 1.3333333
-  m_Speed: 3.5
+  m_Speed: 1
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
@@ -646,12 +713,64 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 416585ffaf8524dcfbd2351cbda1e920, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthBar: {fileID: 61768958}
-  wayPoints: []
-  movementType: 0
-  maxHealth: 15
+  Player: {fileID: 0}
   agent: {fileID: 7949094586910062015}
   patrolRange: 2
   detectionRange: 6.345072
+--- !u!114 &2071570975
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3769117110165184899}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20abddae5488a4474ad7c90254c1896d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemyPrefab: {fileID: 5108599927002592912, guid: 9a481e358588943f59a92624ee58b3cb, type: 3}
+  interval: 1000
+--- !u!114 &2071570982
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3769117110165184899}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12db80e1fd5714f3cb132fc07d1c05bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Player: {fileID: 0}
+  bullet: {fileID: 8451462131244930227, guid: 049e1337af19b4a7ab05b01cb044b659, type: 3}
+  bulletParent: {fileID: 1557736529}
+  agent: {fileID: 7949094586910062015}
+  detectionRange: 5
   followsPlayer: 1
-  centrePoint: {x: 0, y: 0}
+  patrolRange: 2
+  shootingRange: 3
+  fireRate: 1
+  movementType: 3
+  wayPoints:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  CurrentPoint: 0
+--- !u!114 &2071570983
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3769117110165184899}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48c0fe965589e453183412f304e68f04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  healthBarEnemy: {fileID: 61768958}
+  currentHealth: 5
+  maxHealth: 15

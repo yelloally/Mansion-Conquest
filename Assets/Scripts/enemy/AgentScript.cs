@@ -40,8 +40,6 @@ public class AgentScript : MonoBehaviour
 
         enemyMovement.agent = agent;
         enemyMovement.Player = Player;
-        Debug.Log("Enemy Health " + enemyHealth); 
-        Debug.Log("Enemy Movement " + enemyMovement); 
     }
 
     private void Update()

@@ -4,6 +4,7 @@ using UnityEngine;
 public class EnemyHealth : MonoBehaviour
 {
     PlayerController pc;
+    EnemyMovement em;
 
     public Health healthBarEnemy;
     Animator enemyanim;
@@ -20,12 +21,18 @@ public class EnemyHealth : MonoBehaviour
     {
         //healthBarEnemy = GetComponent<Health>();
         pc = GetComponent<PlayerController>();
+        em = GetComponent<EnemyMovement>();
         enemyanim = GetComponent<Animator>();
 
         healthEnemy = maxHealth;
         healthBarEnemy.SetMaxHealth(maxHealth);
         Debug.Log("Health Bar Enemy " + healthBarEnemy); 
         Debug.Log("Player Controller " + pc); 
+    }
+
+    private void Update()
+    {
+        em.EnemyMovementLogic();
     }
 
     public void Damage_()

@@ -368,8 +368,8 @@ MonoBehaviour:
     key5: {r: 0, g: 0, b: 0, a: 0}
     key6: {r: 0, g: 0, b: 0, a: 0}
     key7: {r: 0, g: 0, b: 0, a: 0}
-    ctime0: 16962
-    ctime1: 46453
+    ctime0: 26214
+    ctime1: 52428
     ctime2: 65535
     ctime3: 0
     ctime4: 0
@@ -509,6 +509,8 @@ GameObject:
   - component: {fileID: 2490495414553598241}
   - component: {fileID: 38795282}
   - component: {fileID: 38795290}
+  - component: {fileID: 4394196629392419014}
+  - component: {fileID: 4394196629392419015}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -617,8 +619,8 @@ Rigidbody2D:
   m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
+  m_UseAutoMass: 1
+  m_Mass: 1.037948
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 0
@@ -649,7 +651,7 @@ BoxCollider2D:
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
-  m_AutoTiling: 0
+  m_AutoTiling: 1
   serializedVersion: 2
   m_Size: {x: 1.2015481, y: 0.86384225}
   m_EdgeRadius: 0
@@ -665,14 +667,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07183517ad30c414cbd921d47318d0a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 10
-  speed: 3.5
   hitKick: {x: 5, y: 5}
   hurtBox: {fileID: 3409392455079348138}
-  attackRadius: 1
+  attackRadius: 1.5
+  hitDelay: 2
   anim: {fileID: 4394196629430243534}
   joystick: {fileID: 0}
-  attackButon: {fileID: 0}
+  attackButton: {fileID: 0}
+--- !u!114 &4394196629392419014
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4394196629430243533}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97845389c931e4945952eaabca345770, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 3.5
+--- !u!114 &4394196629392419015
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4394196629430243533}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0224d09d5fb954069af7878238a32ea5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 10
   healthBar: {fileID: 1899565184}
-  rb: {fileID: 2490495414553598241}
-  hitDelay: 2

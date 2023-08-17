@@ -81,19 +81,34 @@ public class PlayerController : MonoBehaviour
             currentHitDelay -= Time.deltaTime;
         }
     }
-    
+
+    private bool isAttacking = false;  
+
     private void Attack()
     {
-        anim.SetTrigger("Attacking");
-        //detect enemies in the attack area and damage them
-        Collider2D[] enemyToHit = Physics2D.OverlapCircleAll(hurtBox.position, attackRadius, LayerMask.GetMask("Enemy"));
-
-        foreach (Collider2D enemy in enemyToHit)
+        if (!isAttacking)
         {
-            Debug.Log("EnemyHit");
-            enemy.GetComponent<EnemyHealth>()?.Damage_();
+            isAttacking = true;
+            anim.SetTrigger("Attacking");
+            //detect enemies in the attack area and damage them
+            Collider2D[] enemyToHit = Physics2D.OverlapCircleAll(hurtBox.position, attackRadius, LayerMask.GetMask("Enemy"));
+
+            foreach (Collider2D enemy in enemyToHit)
+            {
+                Debug.Log("EnemyHit");
+                enemy.GetComponent<EnemyHealth>()?.Damage_();
+            }
+
+            StartCoroutine(ResetAttack());
         }
     }
+
+    private IEnumerator ResetAttack()
+    {
+        yield return new WaitForSeconds(0.5f);  
+        isAttacking = false;
+    }
+
 
     public void PlayerHit(bool hitByBomb)
     {

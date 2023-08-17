@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -14,6 +15,7 @@ public class EnemyMovement : MonoBehaviour
     public NavMeshAgent agent;
 
     public float detectionRange = 5f;
+    private bool isFiring = false;
     public bool followsPlayer = true;
     public float patrolRange = 2f;
     public float shootingRange;
@@ -118,24 +120,24 @@ public class EnemyMovement : MonoBehaviour
                     }
                     break;
                 case MovementType.Boss:
-                    if (agent.remainingDistance <= agent.stoppingDistance)
+
+                    if (agent.remainingDistance <= agent.stoppingDistance && !agent.pathPending)
                     {
-                        if (!agent.pathPending)
-                        {
-                            if (RandomPoint(centrePoint, patrolRange, out Vector2 point))
-                            {
-                                agent.SetDestination(point);
-                                targetPoint = point;
-                            }
-                        }
+                        GameObject waypoint = wayPoints[CurrentPoint];
+                        Vector2 waypointVector = waypoint.transform.position;
+                        agent.SetDestination(waypointVector);
+
+                        targetPoint = waypointVector;
+
+                        CurrentPoint++;
+
+                        if (CurrentPoint >= wayPoints.Count)
+                            CurrentPoint = 0;
                     }
-
-                    //shooting logic
-                    else if (distanceToPlayer <= shootingRange && nextFireTime < Time.time)
+                    else if (distanceToPlayer >= shootingRange && Time.time >= nextFireTime && !isFiring)
                     {
-                        Vector2 playerDirection = (Player.transform.position - transform.position).normalized;
-
-                        Instantiate(bullet, bulletParent.transform.position, Quaternion.identity);
+                        Debug.Log("Starting to fire...");
+                        FireBullet();
                         nextFireTime = Time.time + fireRate;
                     }
                     break;
@@ -144,6 +146,27 @@ public class EnemyMovement : MonoBehaviour
 
         // Make the enemy face forward
         agent.transform.rotation = Quaternion.LookRotation(Vector3.forward);
+    }
+
+    private IEnumerator ResetFiringState()
+    {
+        yield return new WaitForSeconds(fireRate);
+        isFiring = false;
+    }
+
+    private void FireBullet()
+    {
+        GameObject newBullet = Instantiate(bullet, bulletParent.transform.position, Quaternion.identity);
+        Bullet bulletScript = newBullet.GetComponent<Bullet>();
+
+        if (bulletScript != null)
+        {
+            bulletScript.target = Player;
+            bulletScript.speed = 10.0f;
+        }
+
+        isFiring = true;
+        StartCoroutine(ResetFiringState());
     }
 
     bool RandomPoint(Vector2 center, float range, out Vector2 result)
