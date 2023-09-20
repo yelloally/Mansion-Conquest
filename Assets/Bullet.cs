@@ -4,28 +4,35 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    public GameObject target;
-    public float speed;
-    public int damage = 1;
-    Rigidbody2D bulletRB;
+    public static GameObject target;
+    private float _damage = 0.5f;
+    private Rigidbody2D bulletRB;
+    private Vector2 _moveDirection;
+
+    public void setBulletDamage(float damage)
+    {
+        _damage = damage;
+    }
+    public void setMovementDirection(Vector2 movementDirection)
+    {
+        _moveDirection = movementDirection;
+    }
 
     // Start is called before the first frame update
     void Start()
     {
-        target = GameObject.FindGameObjectWithTag("Player");
         bulletRB = GetComponent<Rigidbody2D>();
-        if (target != null)
-        {
-            Vector2 moveDir = (target.transform.position - transform.position).normalized * speed;
-            bulletRB.velocity = new Vector2(moveDir.x, moveDir.y);
-            Destroy(gameObject, 2);
-        }
-        else
+
+        bulletRB.velocity = new Vector2(_moveDirection.x, _moveDirection.y);
+        Destroy(gameObject, 2);
+
+        if (target == null)
         {
             Debug.LogWarning("target not assigned to bullet");
             Destroy(gameObject); //destroy the bullet if target is not assigned
-        }
 
+            
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -39,7 +46,7 @@ public class Bullet : MonoBehaviour
             PlayerHealth playerHealth = target.GetComponent<PlayerHealth>();
             if (playerHealth != null)
             {
-                playerHealth.TakeDamage(damage);
+                playerHealth.TakeDamage(_damage);
             }
 
             Destroy(gameObject); //destroy the bullet upon hitting 

@@ -6,7 +6,7 @@ using UnityEngine.AI;
 
 public class EnemyMovement : MonoBehaviour
 {
-    SpriteRenderer sr;
+    private SpriteRenderer sr;
 
     public GameObject Player;
     public GameObject bullet;
@@ -15,23 +15,26 @@ public class EnemyMovement : MonoBehaviour
     public NavMeshAgent agent;
 
     public float detectionRange = 5f;
-    private bool isFiring = false;
     public bool followsPlayer = true;
     public float patrolRange = 2f;
-    public float shootingRange;
-    public float fireRate = 1;
+    public float shootingRange = 10;
 
-    private float nextFireTime;
+    public float FireRateFireLotsOfBullets = 10;
+    public float FireRateFireBullet = 1.5f;
+
+    private float CooldownFireBullet;
+    private float CooldownFireLotsOfBullets;
+
+    private Vector2 targetPoint;
 
     private Vector2 centrePoint;
-    private Vector2 targetPoint;
 
     [SerializeField]
     private MovementType movementType = MovementType.None;
 
     [SerializeField]
-    public List<GameObject> wayPoints = new List<GameObject>();
-    public int CurrentPoint = 0;
+    private List<GameObject> wayPoints = new List<GameObject>();
+    private int CurrentPoint = 0;
 
 
     private enum MovementType
@@ -47,6 +50,8 @@ public class EnemyMovement : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         Player = GameObject.Find("Player");
         sr = GetComponent<SpriteRenderer>();
+        centrePoint = transform.position;
+        Bullet.target = Player;
     }
 
     private void Update()
@@ -78,12 +83,6 @@ public class EnemyMovement : MonoBehaviour
             // Reset timeSincePlayerLeft
             timeSincePlayerLeft = 0f;
         }
-
-        else if (distanceToPlayer <= shootingRange)
-        {
-            Instantiate(bullet, bulletParent.transform.position, Quaternion.identity);
-        }
-
         else
         {
             timeSincePlayerLeft += Time.deltaTime;
@@ -97,6 +96,7 @@ public class EnemyMovement : MonoBehaviour
                     if (agent.remainingDistance <= agent.stoppingDistance && !agent.pathPending)
                     {
                         Vector2 point;
+
                         if (RandomPoint(centrePoint, patrolRange, out point))
                         {
                             agent.SetDestination(point);
@@ -121,7 +121,11 @@ public class EnemyMovement : MonoBehaviour
                     break;
                 case MovementType.Boss:
 
-                    if (agent.remainingDistance <= agent.stoppingDistance && !agent.pathPending)
+                    if(distanceToPlayer < shootingRange)
+                    {
+                        agent.SetDestination(gameObject.transform.position);
+                    }
+                    else if (agent.remainingDistance <= agent.stoppingDistance && !agent.pathPending)
                     {
                         GameObject waypoint = wayPoints[CurrentPoint];
                         Vector2 waypointVector = waypoint.transform.position;
@@ -134,11 +138,23 @@ public class EnemyMovement : MonoBehaviour
                         if (CurrentPoint >= wayPoints.Count)
                             CurrentPoint = 0;
                     }
-                    else if (distanceToPlayer >= shootingRange && Time.time >= nextFireTime && !isFiring)
+
+                    //Abilities
+                    if (distanceToPlayer <= shootingRange)
                     {
-                        Debug.Log("Starting to fire...");
-                        FireBullet();
-                        nextFireTime = Time.time + fireRate;
+                        if (Time.time >= CooldownFireBullet)
+                        {
+                            Debug.Log("Starting to fire...");
+                            FireBullet();
+                            CooldownFireBullet = Time.time + FireRateFireBullet;
+                        }
+
+                        if (Time.time >= CooldownFireLotsOfBullets)
+                        {
+                            Debug.Log("Starting to fire a lot of bullets...");
+                            FireLotsOfBullets();
+                            CooldownFireLotsOfBullets = Time.time + FireRateFireLotsOfBullets;
+                        }
                     }
                     break;
             }
@@ -148,25 +164,28 @@ public class EnemyMovement : MonoBehaviour
         agent.transform.rotation = Quaternion.LookRotation(Vector3.forward);
     }
 
-    private IEnumerator ResetFiringState()
+    private void FireLotsOfBullets()
     {
-        yield return new WaitForSeconds(fireRate);
-        isFiring = false;
-    }
+        for(int i = 0; i < 10; i++)
+        {
+            GameObject newBullet = Instantiate(bullet, bulletParent.transform.position, Quaternion.identity);
+            Bullet bulletScript = newBullet.GetComponent<Bullet>();
 
+            Vector2 moveDir = (Player.transform.position - transform.position).normalized * i;
+
+            bulletScript.setMovementDirection(moveDir);
+            bulletScript.setBulletDamage(0.1f);
+        }
+    }
     private void FireBullet()
     {
         GameObject newBullet = Instantiate(bullet, bulletParent.transform.position, Quaternion.identity);
         Bullet bulletScript = newBullet.GetComponent<Bullet>();
 
-        if (bulletScript != null)
-        {
-            bulletScript.target = Player;
-            bulletScript.speed = 10.0f;
-        }
+        Vector2 moveDir = (Player.transform.position - transform.position).normalized * 10;
 
-        isFiring = true;
-        StartCoroutine(ResetFiringState());
+        bulletScript.setMovementDirection(moveDir);
+        bulletScript.setBulletDamage(0.5f);
     }
 
     bool RandomPoint(Vector2 center, float range, out Vector2 result)

@@ -5,10 +5,10 @@ using UnityEngine;
 
 public class PlayerHealth : MonoBehaviour
 {
-    [SerializeField] private int maxHealth = 10;
+    [SerializeField] private float maxHealth = 10;
     public Health healthBar;
 
-    private int health;
+    private float health;
 
     // Start is called before the first frame update
     void Start()
@@ -18,7 +18,7 @@ public class PlayerHealth : MonoBehaviour
         healthBar.SetMaxHealth(maxHealth); 
     }
     //increases the player's health 
-    public void AddHealth(int amount)
+    public void AddHealth(float amount)
     {
         health += amount;
         health = Mathf.Min(health, maxHealth);
@@ -26,7 +26,7 @@ public class PlayerHealth : MonoBehaviour
     }
 
     //inflicts damage to the player's health
-    public void TakeDamage(int damage)
+    public void TakeDamage(float damage)
     {
         health -= damage;
 

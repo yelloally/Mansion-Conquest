@@ -8,6 +8,7 @@ public class EnemySpawner : MonoBehaviour
     public float interval = 100;
 
     private float counter = 0;
+    private int enemiesSpawned = 0; //track the number of enemies spawned.
 
     // Update is called once per frame
     void FixedUpdate()
@@ -17,7 +18,12 @@ public class EnemySpawner : MonoBehaviour
         if (counter >= interval)
         {
             counter = 0;
-            Instantiate(enemyPrefab, transform.position, transform.rotation);
+
+            if (enemiesSpawned < 3) //check if the number of spawned enemies is less than 3.
+            {
+                Instantiate(enemyPrefab, transform.position, transform.rotation);
+                enemiesSpawned++; //increment the count of spawned enemies.
+            }
         }
     }
 }

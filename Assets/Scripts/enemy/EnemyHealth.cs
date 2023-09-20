@@ -9,13 +9,13 @@ public class EnemyHealth : MonoBehaviour
     public Health healthBarEnemy;
     Animator enemyanim;
     
-    public int currentHealth;
+    public float currentHealth;
     private bool isDead = false;
 
-    private int healthEnemy;
+    private float healthEnemy;
 
     
-    public int maxHealth = 3;
+    public float maxHealth = 4.5f;
 
     private void Start()
     {
@@ -52,7 +52,7 @@ public class EnemyHealth : MonoBehaviour
     }
 
 
-    public int GetCurrentHealth()
+    public float GetCurrentHealth()
     {
         return healthEnemy;
     }
