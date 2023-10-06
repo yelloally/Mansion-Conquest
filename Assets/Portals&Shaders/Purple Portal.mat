@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Shader Graphs_Portal1
+  m_Name: Purple Portal
   m_Shader: {fileID: -6465566751694194690, guid: 7eafe49fcc3414a5682b175a6cedf076, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
