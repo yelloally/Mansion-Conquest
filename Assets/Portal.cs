@@ -6,15 +6,20 @@ public class Portal : MonoBehaviour
 {
     [SerializeField] private float TimeToTeleport = 1f;
     [SerializeField] private Transform teleportLocation;
+
     private float teleportTime;
+    private bool isTeleported;
+    private GameObject player;
 
     private void Start()
     {
+        teleportTime = TimeToTeleport;
     }
 
     private void Update()
     {
         if(player && isTeleported)
+        {
             if(teleportTime > 0f)
             {
                 teleportTime -= Time.deltaTime;
